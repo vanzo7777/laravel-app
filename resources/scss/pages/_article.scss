@@ -123,6 +123,9 @@
         text-align: center;
         margin: 0;
         margin-bottom: 40px;
+        &::first-letter {
+          text-transform: uppercase;
+        }
         @media (max-width: 480px) {
           font-size: 28px;
         }
@@ -149,6 +152,9 @@
         padding: 15px 30px;
         border-radius: 10px;
         box-shadow: 0 0 4px rgba(0,0,0,.2);
+        &::first-letter {
+          text-transform: uppercase;
+        }
         
     }
 }
