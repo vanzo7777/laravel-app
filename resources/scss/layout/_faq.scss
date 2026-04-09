@@ -1,0 +1,120 @@
+.faq {
+    margin-bottom: 20px;
+    &__items {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+  
+    &__item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  
+      &.is-active {
+        border-color: #d1d5db;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  
+        .faq__icon {
+          &::before {
+            transform: translate(-50%, -50%) rotate(180deg);
+            opacity: 0;
+          }
+  
+          &::after {
+            transform: translate(-50%, -50%) rotate(180deg);
+          }
+        }
+      }
+    }
+  
+    &__question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 24px;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: #111827;
+    }
+  
+    &__question-text {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+  
+    &__icon {
+      position: relative;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+  
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 16px;
+        height: 2px;
+        background: #e31e24;
+        border-radius: 10px;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+      }
+  
+      &::before {
+        transform: translate(-50%, -50%) rotate(90deg);
+      }
+  
+      &::after {
+        transform: translate(-50%, -50%);
+      }
+    }
+  
+    &__answer-wrap {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.3s ease;
+    }
+  
+    &__answer {
+      padding: 0 24px 20px;
+      color: #4b5563;
+      font-size: 16px;
+      line-height: 1.75;
+  
+      p {
+        margin: 0;
+      }
+    }
+  
+    @media (max-width: 767px) {
+      &__question {
+        padding: 16px 18px;
+      }
+  
+      &__question-text {
+        font-size: 16px;
+      }
+  
+      &__answer {
+        padding: 0 18px 18px;
+        font-size: 15px;
+      }
+    }
+  }
+
+  .card__admin {
+    .faq__answer {
+        padding: 0;
+    }
+  }

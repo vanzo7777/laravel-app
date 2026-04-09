@@ -1,13 +1,13 @@
-@use 'abstracts/variables' as *;
-@use 'abstracts/mixins' as *;
-@use 'abstracts/variables.scss' as *;
+@use 'abstracts/config.scss' as *;
 
 @use 'base/fonts';
 
 @use 'layout/header';
 @use 'layout/footer';
+@use 'layout/faq';
 
 @use 'components/buttons';
+@use 'components/nav';
+@use 'components/inputs';
 
-@use 'pages/home';
 @use 'pages/article';

@@ -9,7 +9,7 @@ class ArticleFaq extends Model
     protected $fillable = [
         'article_id', 
         'question', 
-        'asnwer', 
+        'answer', 
         'sort_order',
     ];
 
