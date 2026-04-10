@@ -19,6 +19,15 @@
                 <div class="error">{{ $message }}</div>
             @enderror
          </div>
+
+        <div class="input-wrapper">
+            <label for="slug">Slug</label>
+            <input type="text" name="slug" id="slug" value="{{ old('slug') }}">
+            @error('slug')
+                <div class="error">{{ $message }}</div>
+            @enderror
+         </div>
+
         <div class="input-wrapper">
             <label for="excerpt"> Kurzbeschreibung </label>
             <textarea name="excerpt" id="excerpt" rows="3">{{ old('excerpt') }}</textarea>
@@ -47,6 +56,14 @@
             <label for="author">Autor</label>
             <input type="text" name="author" id="author" value="{{ old('author') }}">
             @error('author')
+               <div class="error">{{ $message }}</div> 
+            @enderror
+         </div>
+
+         <div class="input-wrapper">   
+            <label for="sort_order">Sort order</label>
+            <input type="text" name="sort_order" id="sort_order" value="{{ old('sort_order') }}">
+            @error('sort_order')
                <div class="error">{{ $message }}</div> 
             @enderror
          </div>

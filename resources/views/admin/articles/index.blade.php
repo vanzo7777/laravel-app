@@ -6,6 +6,22 @@
 
 <h1>Admin-bereich: Artikle</h1>
 
+<div class="search search-live" data-search-url="{{ route('admin.articles.ajax.search') }}">
+    <div class="search__wrapper">
+        <form class="search__form" action="{{ route('admin.articles.index') }}" method="GET" autocomplete="fale">
+            <input 
+                type="text"
+                name="search" 
+                class="search__input"
+                placeholder="Suche nach Artikeln..." 
+                value="{{ request('search') }}"
+            > 
+            <div class="search-popup search-popup--admin" hidden></div>
+            <button type="submit" class="btn btn-green">Suchen</button>
+        </form>
+    </div>
+</div>
+
 <p>
     <a href="{{ route('admin.articles.create') }}" class="btn btn-green">+ Neuer Artikel</a>
 </p>
@@ -43,6 +59,10 @@
         @endforeach
     </tbody>
 </table>
+
+<div class="card__pagination">
+    {{ $articles->links() }}
+</div>
 
 @else
 

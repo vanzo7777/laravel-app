@@ -5,23 +5,113 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Article;
+use Illuminate\Validation\Rule;
 
 class ArticleController extends Controller
 {
-    public function publicIndex() {
-        $articles = Article::orderBy('publish_date', 'desc')->get();
+    public function publicIndex(Request $request) {
+        $query = Article::query()->orderBy('sort_order');
+
+        if($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(fn($q) =>
+                $q  -> where('title', 'like', '%' . $search . '%')
+                    -> orwhere('excerpt', 'like', '%' . $search . '%')
+                    -> orWhere('content', 'like', '%' . $search . '%')
+                    -> orWhere('author', 'like', '%' . $search . '%')
+            ) 
+            -> orderBy('sort_order');
+        }
+
+        $articles = $query->paginate(6)->withQueryString();
 
         return view('articles.index', compact('articles'));
     }
 
-    public function show($id) {
-        $article = Article::with('faqs')->findOrFail($id);
+    public function show(string $slug) {
+        $article = Article::with('faqs')
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         return view('articles.show', compact('article'));
     }
 
-    public function adminIndex() {
-        $articles = Article::orderBy('id', 'desc')->get();
+    public function ajaxSearch(Request $request) {
+        $search = trim($request->get('search', ''));
+
+        if($search === '' ) {
+            return response()->json([]);
+        }
+
+        $articles = Article::query()
+            -> select('id', 'title', 'slug', 'excerpt', 'image', 'publish_date', 'sort_order', 'author')
+            -> where(fn($q) => 
+            $q  -> where('title', 'like', '%' . $search . '%')
+                -> orWhere('excerpt', 'like', '%' . $search . '%')
+                -> orWhere('content', 'like', '%' . $search . '%')
+                -> orWhere('author', 'like', '%' . $search . '%')
+            )
+            ->orderBy('sort_order')
+            -> limit(10)
+            ->get()
+            ->map(fn($article) => [
+                'title' => $article->title,
+                'slug' => $article->slug,
+                'excerpt' => $article->excerpt,
+                'author' => $article->author,
+                'publish_date' => $article->publish_date,
+                'url' => route('articles.show', $article->slug),
+                'image_url' => $article->image_url,
+            ]);
+        return response()->json($articles);
+    }
+
+    public function ajaxAdminSearch(Request $request) {
+        $search = trim($request->get('search', ''));
+
+        if($search === '') {
+            return response()->json([]);
+        }
+
+        $like = "%{$search}%";
+
+        $articles = Article::query()
+            -> select('id', 'title', 'slug', 'excerpt', 'image', 'publish_date', 'sort_order', 'author')
+            -> where(fn($q) => 
+                $q  -> where('title', 'like', $like )
+                    -> orWhere('excerpt', 'like', $like)
+                    -> orWhere('content', 'like', $like)
+                    -> orWhere('author', 'like', $like)
+            )  
+            ->orderBy('sort_order')
+            ->limit(10)
+            ->get()
+            ->map(fn($article) => [
+                'title' => $article->title,
+                'slug' => $article->slug,
+                'author' => $article->author,
+                'publish_date' => $article->publish_date,
+                'edit_url' => route('admin.articles.edit', $article->id),
+            ]);
+        return response()->json($articles);
+    }
+
+    public function adminIndex(Request $request) {
+
+        $query = Article::query();
+
+        if($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(fn($q) => 
+                $q  -> where('title', 'like', '%' . $search . '%')
+                    -> orWhere('content', 'like', '%' . $search . '%')
+                    -> orWhere('content', 'like', '%' . $search . '%')
+                    -> orWhere('author', 'like', '%' . $search . '%')
+            ) 
+            -> orderBy('sort_order');
+        }
+
+        $articles = $query->paginate(10)->withQueryString();
         return view('admin.articles.index', compact('articles'));
     }
 
@@ -33,6 +123,8 @@ class ArticleController extends Controller
 
         $validated = $request->validate([
             'title'           => 'required|string|max:255',
+            'sort_order'      => 'integer',
+            'slug'            => ['nullable', 'string', 'max:255', Rule::unique('articles', 'slug')->withoutTrashed()],
             'excerpt'         => 'nullable|string',
             'content'         => 'required|string',
             'publish_date'    => 'required|date', 
@@ -52,8 +144,12 @@ class ArticleController extends Controller
             $imagePath = 'images/default-article.png';
         }
 
+        $slug = !empty($validated['slug']) ? $validated['slug'] : Article::generateUniqueSlug($validated['title']);
+
         $article = Article::create([
             'title'        => $validated['title'], 
+            'sort_order'   => $validated['sort_order'],
+            'slug'         => $slug, 
             'excerpt'      => $validated['excerpt'] ?? '', 
             'content'      => $validated['content'], 
             'publish_date' => $validated['publish_date'], 
@@ -90,6 +186,8 @@ class ArticleController extends Controller
 
         $validated = $request->validate([
             'title'           => 'required|string|max:255', 
+            'sort_order'      => 'integer',
+            'slug'            => ['nullable', 'string', 'max:255', Rule::unique('articles', 'slug')->ignore($article->id)->withoutTrashed()],
             'excerpt'         => 'nullable|string', 
             'content'         => 'required|string', 
             'publish_date'    => 'required|date',
@@ -109,10 +207,15 @@ class ArticleController extends Controller
 
             $imagePath = $request->file('image')->store('article', 'public');
         }
+
+
+        $slug = !empty($validated['slug']) ? $validated['slug'] : Article::generateUniqueSlug($validated['title'], $article->id);
         
 
         $article->update([
             'title'        => $validated['title'], 
+            'sort_order'   => $validated['sort_order'],
+            'slug'         => $slug,
             'excerpt'      => $validated['excerpt'] ?? '', 
             'content'      => $validated['content'], 
             'publish_date' => $validated['publish_date'], 

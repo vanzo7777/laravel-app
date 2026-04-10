@@ -1,0 +1,15 @@
+.search {
+    &__wrapper {
+        margin-bottom: 20px;
+        position: relative;
+    }
+    &__form {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        input {
+            margin: 0;
+            max-width: 300px;
+        }
+    }
+}

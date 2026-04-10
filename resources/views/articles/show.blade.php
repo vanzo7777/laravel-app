@@ -47,5 +47,44 @@
     <a href="{{ route('articles.index') }}" class="btn btn-secondary btn-back">Zurück</a>
 </div>
 
+<script type="application/ld+json">
+
+{
+    '@content': 'https://schema.org', 
+    '@type': 'Article', 
+    'headline': @json($article->title), 
+    'author': {
+        '@type': 'Person', 
+        'name': @json($article->author)
+    }, 
+    'datePublished': "{{ $article->publish_date }}",
+    'dateModified' : "{{ $article->updated_at->toDateString() }}", 
+    'description'  : "{{ $article->short_excerpt }}", 
+    'mainEntityOfPage' : {
+        '@type': 'WebPage', 
+        '@id'  : "{{ url() -> current() }}"
+    }@if($article->image), 
+    'image' : "{{ asset('storage/' . $article->image) }}" @endif
+}
+
+</script>
+
+@if($article->faqs->count()) 
+<script type="application/ld+json">
+    '@content': 'https://schema.org', 
+    '@type': 'FAQ', 
+    @foreach($article->faqs as $value)
+        {
+            '@type': 'Question', 
+            'name': @json($value -> question),
+            'acceptedAnswer': {
+                '@type': 'Answer', 
+                'text' : @json($value -> answer)
+            }
+        } @if(!$loop -> last),@endif
+    @endforeach
+</script>
+@endif
+
 
 @endsection

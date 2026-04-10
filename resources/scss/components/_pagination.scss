@@ -1,0 +1,33 @@
+.card__pagination {
+    nav {
+        .flex {
+            display: flex; 
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            span, a {
+                display: inline-block;
+                background-color: #2563eb;
+                border: 1px solid transparent;
+                padding: 10px;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #fff;
+                text-decoration: none;
+                transition: background-color .3s ease, border-color .3s ease, color .3s ease;
+            }
+            span {
+                background-color: gray;
+            }
+            a:hover {
+                border-color: #2563eb;
+                background-color: transparent;
+                color: #2563eb;
+            }
+        }
+        .hidden {
+            overflow: hidden;
+            display: none;
+        }
+    }
+}

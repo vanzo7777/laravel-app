@@ -11,9 +11,15 @@ Route::get('/', function () {
 });
 
 
+/** Ajax */
+
+Route::get('/articles/search-ajax', [ArticleController::class, 'ajaxSearch'])->name('articles.ajax.search');
+Route::get('/admin/articles/search-ajax', [ArticleController::class, 'ajaxAdminSearch'])->name('admin.articles.ajax.search');
+
+
 
 Route::get('/articles', [ArticleController::class, 'publicIndex'])->name('articles.index');
-Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
 
 /** Admin */

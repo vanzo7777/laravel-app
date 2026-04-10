@@ -20,6 +20,14 @@
         </div>
 
         <div class="input-wrapper">
+            <label for="slug">Slug</label>
+            <input type="text" name="slug" id="slug" value="{{ old('slug', $article->slug) }}">
+            @error('slug')
+                <div class="error">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="input-wrapper">
             <label for="excerpt">Kurzbeschreibung</label>
             <textarea name="excerpt" id="excerpt" row="3">{{ old('excerpt', $article->excerpt) }}</textarea>
             @error('excerpt')
@@ -50,6 +58,16 @@
                 <div class="error">{{ $message }}</div>
             @enderror
         </div>
+
+        <div class="input-wrapper">
+            <label for="sort_order">Sort order</label>
+            <input type="text" name="sort_order" id="sort_order" value="{{ old('sort_order', $article->sort_order) }}">
+            @error('sort_order')
+                <div class="error">{{ $message }}</div>
+            @enderror
+        </div>
+
+
         <div class="input-wrapper">
             <label for="image">Bild</label>
             <input type="file" name="image" id="image" accept="image/*">

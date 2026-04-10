@@ -1,4 +1,5 @@
 import './bootstrap';
+import './search-live';
 import '../scss/app.scss';
 
 
